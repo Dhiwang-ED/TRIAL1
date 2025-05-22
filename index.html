@@ -3,54 +3,216 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Latihan Pembagian Bersusun (Porogapit)</title>
+<title>Latihan Soal Matematika SD</title>
 <style>
-  body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
-  h1 { text-align: center; }
-  .soal { font-size: 18px; margin-bottom: 12px; }
-  button { font-size: 16px; padding: 10px 15px; margin-top: 20px; cursor: pointer; }
-  #container { margin-top: 30px; }
-  .info { margin-bottom: 20px; font-size: 14px; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+    margin: 0; padding: 20px;
+  }
+  .container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    padding: 30px 40px;
+  }
+  h1 {
+    text-align: center;
+    color: #2c3e50;
+  }
+  label {
+    display: block;
+    margin: 15px 0 8px 0;
+    font-weight: 600;
+    color: #34495e;
+  }
+  select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 2px solid #2980b9;
+    font-size: 16px;
+    color: #2c3e50;
+    cursor: pointer;
+  }
+  button {
+    margin-top: 25px;
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #1c5980;
+  }
+  #soal-container {
+    margin-top: 30px;
+    background: #f0f8ff;
+    padding: 20px 25px;
+    border-radius: 12px;
+    box-shadow: inset 0 0 10px #a9c9ff;
+  }
+  .soal-item {
+    font-size: 20px;
+    margin-bottom: 14px;
+    color: #2c3e50;
+  }
+  #print-info {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #7f8c8d;
+  }
   @media print {
-    button { display: none; }
+    button, select, label {
+      display: none !important;
+    }
+    #print-info {
+      display: block !important;
+      margin-top: 40px;
+    }
   }
 </style>
 </head>
 <body>
-<h1>Latihan Pembagian Bersusun (Porogapit)</h1>
-<div class="info">
-  Nama: ____________________ &nbsp;&nbsp;&nbsp; Tanggal: ____________________
+<div class="container">
+  <h1>Latihan Soal Matematika SD</h1>
+
+  <label for="level">Tingkat Kesulitan</label>
+  <select id="level">
+    <option value="mudah">Mudah</option>
+    <option value="sedang">Sedang</option>
+    <option value="sulit">Sulit</option>
+  </select>
+
+  <label for="jumlah">Jumlah Soal</label>
+  <select id="jumlah">
+    <option value="5">5 Soal</option>
+    <option value="10" selected>10 Soal</option>
+    <option value="15">15 Soal</option>
+  </select>
+
+  <label for="materi">Materi</label>
+  <select id="materi">
+    <option value="penjumlahan">Penjumlahan</option>
+    <option value="pengurangan">Pengurangan</option>
+    <option value="perkalian">Perkalian</option>
+    <option value="pembagian">Pembagian</option>
+  </select>
+
+  <button id="btn-generate">Buat Soal</button>
+  <button id="btn-print" style="display:none; background-color:#27ae60;">Cetak Soal</button>
+
+  <div id="soal-container"></div>
+  <div id="print-info" style="display:none;"></div>
 </div>
 
-<div id="container"></div>
-
-<button onclick="generateSoal()">Buat Soal Baru</button>
-<button onclick="window.print()">Cetak Soal</button>
-
 <script>
-function generateSoal() {
-  const container = document.getElementById('container');
-  container.innerHTML = ''; // kosongkan dulu
-  const jumlahSoal = 10;
-  let nomor = 1;
+  const btnGenerate = document.getElementById('btn-generate');
+  const btnPrint = document.getElementById('btn-print');
+  const soalContainer = document.getElementById('soal-container');
+  const printInfo = document.getElementById('print-info');
 
-  for(let i=0; i<jumlahSoal; i++) {
-    // Penyebut dari 2 sampai 9
-    let penyebut = Math.floor(Math.random() * 8) + 2;
-    // Hasil bulat antara 10 sampai 100
-    let hasil = Math.floor(Math.random() * 91) + 10;
-    let pembilang = penyebut * hasil;
-
-    const soalDiv = document.createElement('div');
-    soalDiv.className = 'soal';
-    soalDiv.textContent = `${nomor}. ${pembilang} ÷ ${penyebut} = ______`;
-    container.appendChild(soalDiv);
-    nomor++;
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-}
 
-// generate soal pertama kali saat halaman dimuat
-generateSoal();
+  function generateSoal(level, materi) {
+    let a, b, question, answer;
+
+    // Tentukan range angka berdasarkan level
+    let range;
+    switch(level) {
+      case 'mudah':
+        range = {min: 1, max: 20};
+        break;
+      case 'sedang':
+        range = {min: 10, max: 50};
+        break;
+      case 'sulit':
+        range = {min: 30, max: 100};
+        break;
+      default:
+        range = {min: 1, max: 20};
+    }
+
+    // Buat soal sesuai materi
+    if(materi === 'penjumlahan') {
+      a = getRandomInt(range.min, range.max);
+      b = getRandomInt(range.min, range.max);
+      question = `${a} + ${b} = ______`;
+      answer = a + b;
+    } 
+    else if(materi === 'pengurangan') {
+      a = getRandomInt(range.min, range.max);
+      b = getRandomInt(range.min, a); // pastikan a >= b supaya hasil positif
+      question = `${a} - ${b} = ______`;
+      answer = a - b;
+    } 
+    else if(materi === 'perkalian') {
+      // perkalian angka kecil untuk SD
+      let multRange;
+      if(level === 'mudah') multRange = {min:1, max:5};
+      else if(level === 'sedang') multRange = {min:3, max:9};
+      else multRange = {min:5, max:12};
+
+      a = getRandomInt(multRange.min, multRange.max);
+      b = getRandomInt(multRange.min, multRange.max);
+      question = `${a} × ${b} = ______`;
+      answer = a * b;
+    } 
+    else if(materi === 'pembagian') {
+      // buat pembagian dengan hasil bulat
+      let divRange;
+      if(level === 'mudah') divRange = {min:1, max:5};
+      else if(level === 'sedang') divRange = {min:3, max:9};
+      else divRange = {min:5, max:12};
+
+      b = getRandomInt(divRange.min, divRange.max);
+      answer = getRandomInt(divRange.min, divRange.max);
+      a = b * answer;
+      question = `${a} ÷ ${b} = ______`;
+    }
+
+    return {question, answer};
+  }
+
+  btnGenerate.addEventListener('click', () => {
+    const level = document.getElementById('level').value;
+    const materi = document.getElementById('materi').value;
+    const jumlah = parseInt(document.getElementById('jumlah').value);
+
+    soalContainer.innerHTML = '';
+    printInfo.style.display = 'none';
+    btnPrint.style.display = 'inline-block';
+
+    for(let i=1; i<=jumlah; i++) {
+      let soalObj = generateSoal(level, materi);
+      let soalDiv = document.createElement('div');
+      soalDiv.className = 'soal-item';
+      soalDiv.textContent = `${i}. ${soalObj.question}`;
+      soalContainer.appendChild(soalDiv);
+    }
+  });
+
+  btnPrint.addEventListener('click', () => {
+    const now = new Date();
+    const tanggal = now.toLocaleDateString('id-ID', {
+      day: '2-digit', month: 'long', year: 'numeric'
+    });
+    const jam = now.toLocaleTimeString('id-ID');
+    printInfo.textContent = `Tanggal cetak: ${tanggal} | Jam cetak: ${jam}`;
+    printInfo.style.display = 'block';
+
+    window.print();
+  });
 </script>
 </body>
 </html>
