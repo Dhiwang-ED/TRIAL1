@@ -1,9 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Halaman HTML Pertama</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Latihan Pembagian Bersusun (Porogapit)</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+  h1 { text-align: center; }
+  .soal { font-size: 18px; margin-bottom: 12px; }
+  button { font-size: 16px; padding: 10px 15px; margin-top: 20px; cursor: pointer; }
+  #container { margin-top: 30px; }
+  .info { margin-bottom: 20px; font-size: 14px; }
+  @media print {
+    button { display: none; }
+  }
+</style>
 </head>
 <body>
-    <h1>Halo Dunia dari GitHub!</h1>
+<h1>Latihan Pembagian Bersusun (Porogapit)</h1>
+<div class="info">
+  Nama: ____________________ &nbsp;&nbsp;&nbsp; Tanggal: ____________________
+</div>
+
+<div id="container"></div>
+
+<button onclick="generateSoal()">Buat Soal Baru</button>
+<button onclick="window.print()">Cetak Soal</button>
+
+<script>
+function generateSoal() {
+  const container = document.getElementById('container');
+  container.innerHTML = ''; // kosongkan dulu
+  const jumlahSoal = 10;
+  let nomor = 1;
+
+  for(let i=0; i<jumlahSoal; i++) {
+    // Penyebut dari 2 sampai 9
+    let penyebut = Math.floor(Math.random() * 8) + 2;
+    // Hasil bulat antara 10 sampai 100
+    let hasil = Math.floor(Math.random() * 91) + 10;
+    let pembilang = penyebut * hasil;
+
+    const soalDiv = document.createElement('div');
+    soalDiv.className = 'soal';
+    soalDiv.textContent = `${nomor}. ${pembilang} ÷ ${penyebut} = ______`;
+    container.appendChild(soalDiv);
+    nomor++;
+  }
+}
+
+// generate soal pertama kali saat halaman dimuat
+generateSoal();
+</script>
 </body>
 </html>
